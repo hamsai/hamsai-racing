@@ -14,7 +14,7 @@ async function raceHamsters(hamsterNames) {
 
     let raceTime = 0; // Initialize race time
     let finishedHamsters = []; // Array to keep track of finished hamsters
-
+    
     // Calculate the maximum and minimum steps per turn to ensure the race finishes within the time range
     const maxStep = RACE_DISTANCE / (MIN_TIME / TURN_INTERVAL);
     const minStep = RACE_DISTANCE / (MAX_TIME / TURN_INTERVAL);
@@ -24,9 +24,14 @@ async function raceHamsters(hamsterNames) {
         // Move each hamster forward
         let stepsForThisTurn = [];
 
-        // Create an array of hamster indices and shuffle it
+        // Create an array of hamster indices
         let hamsterIndices = hamsters.map((_, index) => index);
-        hamsterIndices = hamsterIndices.sort(() => generator.random() - 0.5);
+
+        // Shuffle it using Fisher-Yates (Knuth) Shuffle
+        for (let i = hamsterIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(generator.random() * (i + 1));
+            [hamsterIndices[i], hamsterIndices[j]] = [hamsterIndices[j], hamsterIndices[i]];
+        }
 
         // Move each hamster based on the shuffled order
         hamsterIndices.forEach((index) => {
@@ -46,8 +51,7 @@ async function raceHamsters(hamsterNames) {
         });
 
         await new Promise(resolve => setTimeout(resolve, TURN_INTERVAL * 1000));
-
-
+        
     }
 
 }
